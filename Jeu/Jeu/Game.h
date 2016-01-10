@@ -37,7 +37,7 @@ public:
 
     sf::RenderWindow m_window;
     sf::View m_view, m_viewMinimap, m_viewInterface;
-    int c_view[2], m_tour, m_nbJoueur, m_numJoueurActif;
+    double c_view[2], m_tour, m_nbJoueur, m_numJoueurActif;
 	sf::Vector2i centreImage;
     TextureManager m_textureManager;
 	SpriteManager m_spriteManager;
