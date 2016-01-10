@@ -58,39 +58,56 @@ void Game::loadSprites()
 
 Game::Game()
 {
-	brouillardDeGuerre = true;
-	m_uniteSelectionne = NULL;
-	m_batimentSelectionne = NULL;
-	m_tour = 0;
+	// A effectuer à chaque fois
 	std::cout << "Chargement des textures ..." << std::endl;
     loadTextures();
 	std::cout << "Chargement des textures termine" << std::endl;
 	std::cout << "Chargement des sprites ..." << std::endl;
 	loadSprites();
 	std::cout << "Chargement des sprites termine" << std::endl;
-	m_map = Map();
-	m_minimap = Minimap(&m_map);
-	m_interface = Interface();
+
     m_window.create(sf::VideoMode(WIN_WIDTH,WIN_HEIGTH), "Jeu de Strategie", sf::Style::Close);
-	centreImage.x = MAP_WIDTH / 2; centreImage.y = MAP_HEIGTH / 2;
+	m_window.setFramerateLimit(60);
 
-	if (MAP_WIDTH % 2 == 0)
-		c_view[0] = (MAP_WIDTH * SPRITE) / 2;
+	// Configuration de la partie
+	m_map = Map(MAP_WIDTH,MAP_HEIGTH);
+
+	//m_map.loadMap("island");
+	m_interface = Interface();
+	centreImage.x = m_map.getWidth() / 2; centreImage.y = m_map.getHeigth() / 2;
+
+	if (m_map.getWidth() % 2 == 0)
+		c_view[0] = (m_map.getWidth() * SPRITE) / 2;
 	else
-		c_view[0] = ((MAP_WIDTH-1) * SPRITE) / 2;
-	if (MAP_HEIGTH % 2 == 0)
-		c_view[1] = (MAP_HEIGTH * SPRITE) / 2;
+		c_view[0] = ((m_map.getWidth() - 1) * SPRITE) / 2;
+	if (m_map.getHeigth() % 2 == 0)
+		c_view[1] = (m_map.getHeigth() * SPRITE) / 2;
 	else
-		c_view[1] = ((MAP_HEIGTH - 1) * SPRITE) / 2;
+		c_view[1] = ((m_map.getHeigth() - 1) * SPRITE) / 2;
+	m_view = sf::View(sf::Vector2f((float)c_view[0], (float)c_view[1]), sf::Vector2f((float)WIN_WIDTH, (float)WIN_HEIGTH));
+	//m_view.zoom(SPRITE >> 6);
+	sf::Color couleur[NB_JOUEUR_MAX];
+	couleur[0] = sf::Color(181,30,30);
+	couleur[1] = sf::Color(24,196,207);
+	couleur[2] = sf::Color(102,181,32);
+	couleur[3] = sf::Color(235,223,95);
+	couleur[4] = sf::Color(225,152,38);
+	couleur[5] = sf::Color(215,111,234);
+	couleur[6] = sf::Color(159,28,220);
+	couleur[7] = sf::Color(255,255,255);
 
-    m_view = sf::View(sf::Vector2f((float)c_view[0],(float)c_view[1]),sf::Vector2f((float)WIN_WIDTH,(float)WIN_HEIGTH));
-    //m_view.zoom(SPRITE >> 6);
-    m_window.setFramerateLimit(60);
+	// Initialisation des joueurs
+	m_nbJoueur = NB_JOUEUR;
+	m_players = new Player* [m_nbJoueur];
+	for (int i = 0; i < m_nbJoueur; i++) {
+		m_players[i] = new Player(couleur[i]);
+	}
 
-	m_players[0] = new Player(sf::Color(127,127,127));
-	m_players[1] = new Player(sf::Color(0, 127, 127));
-	m_nbJoueur = 2;
-
+	// Mise en place du 1er joueur
+	m_uniteSelectionne = NULL;
+	m_batimentSelectionne = NULL;
+	brouillardDeGuerre = false;
+	m_tour = 0;
 	m_numJoueurActif = 0;
 	m_playerActif = m_players[m_numJoueurActif];
 	m_players[0]->decouvre();
@@ -134,6 +151,14 @@ Game::Game()
 	textMetaux.setColor(sf::Color::White);
 	textMetaux.setStyle(sf::Text::Bold);
 	textMetaux.setPosition(c_view[0] - 254, c_view[1] - 264);
+	if (brouillardDeGuerre)
+	{
+		m_minimap = Minimap(&m_map, m_playerActif);
+	}
+	else
+	{
+		m_minimap = Minimap(&m_map);
+	}
 }
 
 void Game::render()
@@ -159,44 +184,19 @@ void Game::render()
 		surbrillanceCaseDeplacement();
 	}
 
-	const int tour = m_tour;
-	textTour.setString(std::to_string(tour));
-	textTour.setPosition(c_view[0] + 230, c_view[1] - 291 +40 /*+40 Ã  enlever !*/);
-
-	textEau.setString(std::to_string(0));
-	textEau.setPosition(c_view[0] - 370, c_view[1] - 295 +40);
-	textEnergie.setString(std::to_string(0));
-	textEnergie.setPosition(c_view[0] - 254, c_view[1] - 295 +40);
-	textPetrole.setString(std::to_string(0));
-	textPetrole.setPosition(c_view[0] - 370, c_view[1] - 264 +40);
-	textMetaux.setString(std::to_string(0));
-	textMetaux.setPosition(c_view[0] - 254, c_view[1] - 264 +40);
-
-	m_window.draw(textTour);
-	m_window.draw(textEau);
-	m_window.draw(textEnergie);
-	m_window.draw(textPetrole);
-	m_window.draw(textMetaux);
-
-	/*
-	//Croix rouge au milieu de l'ï¿½cran
-	sf::RectangleShape shape(sf::Vector2f(2, 10));
-	shape.setPosition(c_view[0]-1,c_view[1]-5);
-	shape.setFillColor(sf::Color(255, 0, 0));
-	m_window.draw(shape);
-	sf::RectangleShape shape2(sf::Vector2f(10, 2));
-	shape2.setPosition(c_view[0]-5, c_view[1]-1);
-	shape2.setFillColor(sf::Color(255, 0, 0));
-	m_window.draw(shape2);
-	 */
-
 	// Render de l'interface
 	m_window.setView(m_viewInterface);
 	m_interface.render(&m_window, &m_spriteManager);
+	if (m_uniteSelectionne != NULL) {
+		m_interface.renderInfoUnite(&m_window, m_uniteSelectionne);
+	}
 
 
 	// Render de la minimap
 	m_window.setView(m_viewMinimap);
+	if (brouillardDeGuerre) {
+		m_minimap.updateBrouillard(&m_map,m_playerActif);
+	}
 	m_minimap.render(&m_window);
 	if (m_minimap.getUniteMode()) {
 		m_minimap.renderPlayer(&m_window,m_players, m_nbJoueur);
@@ -250,6 +250,7 @@ void Game::actionUnite(sf::Vector2i caseClique) {
 	for (int i = 0; i < m_deplacement.size(); i++) {
 		if (caseClique.x == m_deplacement[i].x / SPRITE && caseClique.y == m_deplacement[i].y / SPRITE) {
 			m_uniteSelectionne->seDeplace(caseClique.x, caseClique.y, &m_window, m_playerActif->getColor(), &m_spriteManager);
+			m_uniteSelectionne->setResistance(m_map.getTile(m_uniteSelectionne->getCoordX(),m_uniteSelectionne->getCoordY()).getBonusRes());
 			m_playerActif->decouvre();
 		}
 	}
@@ -263,10 +264,9 @@ void Game::actionUnite(sf::Vector2i caseClique) {
 							int ecartUniteX = unite->getCoordX() - m_players[j]->getUnite(k)->getCoordX();
 							int ecartUniteY = unite->getCoordY() - m_players[j]->getUnite(k)->getCoordY();
 							int distance = abs(ecartUniteX) + abs(ecartUniteY);
-							std::cout << distance << std::endl;
-
 							if (distance > unite->getRangeMax()) {
 								deplacementAutoPourAttaque(ecartUniteX, ecartUniteY, distance, unite, m_players[j]->getUnite(k)->getCoordX(), m_players[j]->getUnite(k)->getCoordY());
+								m_uniteSelectionne->setResistance(m_map.getTile(m_uniteSelectionne->getCoordX(), m_uniteSelectionne->getCoordY()).getBonusRes());
 								m_playerActif->decouvre();
 							}
 							unite->attaque(m_players[j]->getUnite(k));
@@ -321,7 +321,6 @@ void Game::clicZoneJeu(int x, int y) {
 }
 
 void Game::clicUnite(int x, int y, Unite *unite) {
-	m_interface.setModeUnite();
 	m_uniteSelectionne = unite;
 	definitionCase();
 }
@@ -357,7 +356,6 @@ void Game::clicInterface(int x, int y) {
 		std::cout << "Options " << std::endl;
 	}
 	else if (x < 787 && 753 < x && y < 31 && 2 < y) {
-		std::cout << "Exit " << std::endl;
 		m_window.close();
 	}
 }
@@ -423,9 +421,9 @@ void Game::definitionCase() {
 
 void Game::definitionCaseUnite(int xOrig, int yOrig, int nbCase) {
 	for (int i = xOrig; i < xOrig + nbCase; i++) {
-		if (i >= MAP_WIDTH) break;
+		if (i >= m_map.getWidth()) break;
 		for (int j = yOrig; (i - xOrig) + (j - yOrig) < nbCase; j++) {
-			if (j >= MAP_HEIGTH) break;
+			if (j >= m_map.getHeigth()) break;
 			if (!(i == xOrig && j == yOrig)) {
 				if (!testUniteAlliee(i, j)) {
 					if (!testEntiteEnnemie(i, j)) {
@@ -452,7 +450,7 @@ void Game::definitionCaseUnite(int xOrig, int yOrig, int nbCase) {
 	for (int i = xOrig - 1; i > xOrig - nbCase || i > 0; i--) {
 		if (i < 0) break;
 		for (int j = yOrig; (xOrig - i) + (j - yOrig) < nbCase; j++) {
-			if (j >= MAP_HEIGTH) break;
+			if (j >= m_map.getHeigth()) break;
 			if (!(i == xOrig && j == yOrig)) {
 				if (!testUniteAlliee(i, j)) {
 					if (!testEntiteEnnemie(i, j)) {
@@ -481,9 +479,9 @@ void Game::definitionCaseUnite(int xOrig, int yOrig, int nbCase) {
 void Game::definitionCaseUniteArmee(int xOrig, int yOrig, int nbCase, int nbCaseAttaque) {
 
 	for (int i = xOrig; i < xOrig + nbCaseAttaque; i++) {
-		if (i >= MAP_WIDTH) break;
+		if (i >= m_map.getWidth()) break;
 		for (int j = yOrig; (i - xOrig) + (j - yOrig) < nbCaseAttaque; j++) {
-			if (j >= MAP_HEIGTH) break;
+			if (j >= m_map.getHeigth()) break;
 			if (!(i == xOrig && j == yOrig)) {
 				if (!testUniteAlliee(i, j)) {
 					if (!testEntiteEnnemie(i, j)) {
@@ -516,7 +514,7 @@ void Game::definitionCaseUniteArmee(int xOrig, int yOrig, int nbCase, int nbCase
 	for (int i = xOrig - 1; i > xOrig - nbCaseAttaque || i > 0; i--) {
 		if (i < 0) break;
 		for (int j = yOrig; (xOrig - i) + (j - yOrig) < nbCaseAttaque; j++) {
-			if (j >= MAP_HEIGTH) break;
+			if (j >= m_map.getHeigth()) break;
 			if (!(i == xOrig && j == yOrig)) {
 				if (!testUniteAlliee(i, j)) {
 					if (!testEntiteEnnemie(i, j)) {
@@ -551,9 +549,9 @@ void Game::definitionCaseUniteArmee(int xOrig, int yOrig, int nbCase, int nbCase
 void Game::definitionCaseUniteDistance(int xOrig, int yOrig, int nbCase, int rangeMin, int rangeMax) {
 	// Definition case deplacable
 	for (int i = xOrig; i < xOrig + nbCase; i++) {
-		if (i >= MAP_WIDTH) break;
+		if (i >= m_map.getWidth()) break;
 		for (int j = yOrig; (i - xOrig) + (j - yOrig) < nbCase; j++) {
-			if (j >= MAP_HEIGTH) break;
+			if (j >= m_map.getHeigth()) break;
 			if (!(i == xOrig && j == yOrig)) {
 				if (!testUniteAlliee(i, j)) {
 					if (!testEntiteEnnemie(i, j)) {
@@ -580,7 +578,7 @@ void Game::definitionCaseUniteDistance(int xOrig, int yOrig, int nbCase, int ran
 	for (int i = xOrig - 1; i > xOrig - nbCase || i > 0; i--) {
 		if (i < 0) break;
 		for (int j = yOrig; (xOrig - i) + (j - yOrig) < nbCase; j++) {
-			if (j >= MAP_HEIGTH) break;
+			if (j >= m_map.getHeigth()) break;
 			if (!(i == xOrig && j == yOrig)) {
 				if (!testUniteAlliee(i, j)) {
 					if (!testEntiteEnnemie(i, j)) {
@@ -607,9 +605,9 @@ void Game::definitionCaseUniteDistance(int xOrig, int yOrig, int nbCase, int ran
 
 	// Definition case attaquable
 	for (int i = xOrig + rangeMin; i < xOrig + rangeMax; i++) {
-		if (i >= MAP_WIDTH) break;
+		if (i >= m_map.getWidth()) break;
 		for (int j = yOrig + rangeMin; (i - xOrig) + (j - yOrig) < rangeMax; j++) {
-			if (j >= MAP_HEIGTH) break;
+			if (j >= m_map.getHeigth()) break;
 			if (!(i == xOrig && j == yOrig)) {
 				if (testEntiteEnnemie(i, j)) {
 					m_attaque.push_back(sf::Vector2f(i*SPRITE, j*SPRITE));
@@ -628,7 +626,7 @@ void Game::definitionCaseUniteDistance(int xOrig, int yOrig, int nbCase, int ran
 	for (int i = xOrig - rangeMin - 1; i > xOrig - rangeMax || i > 0; i--) {
 		if (i < 0) break;
 		for (int j = yOrig + rangeMin; (xOrig - i) + (j - yOrig) < rangeMax; j++) {
-			if (j >= MAP_HEIGTH) break;
+			if (j >= m_map.getHeigth()) break;
 			if (!(i == xOrig && j == yOrig)) {
 				if (testEntiteEnnemie(i, j)) {
 					m_attaque.push_back(sf::Vector2f(i*SPRITE, j*SPRITE));
@@ -710,15 +708,6 @@ void Game::selection(sf::Vector2i caseClique, int x, int y) {
 		for (int i = 0; i < m_playerActif->getNombreUnite(); i++) {
 			if (m_playerActif->getUnite(i)->getCoordX() == caseClique.x && m_playerActif->getUnite(i)->getCoordY() == caseClique.y && m_playerActif->getUnite(i)->peutAgir()) {
 				clicUnite(x, y, m_playerActif->getUnite(i));
-				std::cout << "Nom : " << m_uniteSelectionne->getNom() << std::endl;
-				std::cout << "Description : " << m_uniteSelectionne->getDescription() << std::endl;
-				std::cout << "PV : " << m_uniteSelectionne->getPvRestant()<< "/" << 10 << std::endl;
-				std::cout << "Ressource : " << m_uniteSelectionne->getStockRessActuel()<<"/"<< m_uniteSelectionne->getStockMaxRess() <<std::endl;
-				if (m_uniteSelectionne->isArmee()) {
-					UniteArmee* unite = (UniteArmee*)m_uniteSelectionne;
-					std::cout << "Munition : " << unite->getStockMunActuel() << "/" << unite->getStockMaxMun() << std::endl;
-					std::cout << "Portï¿½e entre " << unite->getRangeMin() << " et " << unite->getRangeMax() << std::endl;
-				}
 			}
 		}
 		if (m_uniteSelectionne == NULL) {

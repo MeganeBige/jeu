@@ -2,20 +2,26 @@
 #include <iostream>
 #include "Map.h"
 
-Map::Map()
+Map::Map(int width, int heigth)
 {
+	m_width = width;
+	m_heigth = heigth;
+	m_tiles = new Tile* [m_width];
+	for (int i = 0; i < m_width; i++) {
+		m_tiles[i] = new Tile[m_heigth];
+	}
 	srand((unsigned int) time(NULL));
 	std::cout << "Creation de la map" << std::endl;
     std::vector<int> tab;
-    for (int i = 0; i < MAP_WIDTH; ++i) {
-        for (int j = 0; j < MAP_HEIGTH; ++j) {
+    for (int i = 0; i < m_width; ++i) {
+        for (int j = 0; j < m_heigth; ++j) {
             tab.push_back(i + j);
         }
     }
     std::random_shuffle(tab.begin(), tab.end());
 
-    for (int i = 0; i < MAP_WIDTH; ++i) {
-        for (int j = 0; j < MAP_HEIGTH; ++j) {
+    for (int i = 0; i < m_width; ++i) {
+        for (int j = 0; j < m_heigth; ++j) {
             permutation[i+j] = (unsigned int)(tab.at((unsigned long)(i + j)));
         }
     }
@@ -25,9 +31,9 @@ Map::Map()
 
 void Map::mapGenerator()
 {
-    for (int i = 0; i < MAP_WIDTH; ++i) {
-        for (int j = 0; j < MAP_HEIGTH; ++j) {
-            m_tiles[i][j] = whichType(bruitPerlin(i+0.5f,j+0.5f,10));
+    for (int i = 0; i < m_width; ++i) {
+        for (int j = 0; j < m_heigth; ++j) {
+            m_tiles[i][j] = Tile(whichType(bruitPerlin(i+0.5f,j+0.5f,10)));
         }
     }
 }
@@ -103,9 +109,9 @@ Tile Map::getTile(int x, int y)
 
 void Map::render(sf::RenderWindow *renderWindow, SpriteManager *manager)
 {
-	for (unsigned int i = 0; i < MAP_WIDTH; ++i)
+	for (unsigned int i = 0; i < m_width; ++i)
 	{
-		for (unsigned int j = 0; j < MAP_HEIGTH; ++j)
+		for (unsigned int j = 0; j < m_heigth; ++j)
 		{
 			sf::Sprite terrain, ressource;
 			switch (m_tiles[i][j].getTypeCase())
@@ -162,9 +168,9 @@ void Map::render(sf::RenderWindow *renderWindow, SpriteManager *manager)
 
 void Map::render(sf::RenderWindow *renderWindow, SpriteManager *manager, Player *player)
 {
-	for (unsigned int i = 0; i < MAP_WIDTH; ++i)
+	for (unsigned int i = 0; i < m_width; ++i)
 	{
-		for (unsigned int j = 0; j < MAP_HEIGTH; ++j)
+		for (unsigned int j = 0; j < m_heigth; ++j)
 		{
 			if (player->aDecouvertLaCase(i, j)) {
 				sf::Sprite terrain, ressource;
@@ -219,4 +225,73 @@ void Map::render(sf::RenderWindow *renderWindow, SpriteManager *manager, Player 
 			}
 		}
 	}
+}
+
+int Map::getWidth() {
+	return m_width;
+}
+
+int Map::getHeigth() {
+	return m_heigth;
+}
+
+void Map::loadMap(std::string name)
+{
+	sf::Image topo;
+	topo.loadFromFile("media/map/" + name + ".png");
+	m_width = topo.getSize().x;
+	m_heigth = topo.getSize().y;
+
+	m_tiles = new Tile*[m_width];
+	for (int i = 0; i < m_width; i++) {
+		m_tiles[i] = new Tile[m_heigth];
+	}
+	srand((unsigned int)time(NULL));
+	std::cout << "Chargement de la map" << std::endl;
+
+	for (unsigned int i = 0; i < m_width; i++) {
+		for (unsigned int j = 0; j < m_heigth; j++) {
+			sf::Color color = topo.getPixel(i, j);
+
+			if (color == sf::Color(0,255,0)) {
+				m_tiles[i][j] = Tile(TypeCase::PLAINE);
+			}
+			else if (color == sf::Color(0,176,0)) {
+				m_tiles[i][j] = Tile(TypeCase::FORET);
+			}
+			else if (color == sf::Color(131,193,42)) {
+				m_tiles[i][j] = Tile(TypeCase::MARAIS);
+			}
+			else if (color == sf::Color(0,0,255)) {
+				m_tiles[i][j] = Tile(TypeCase::MER);
+			}
+			else if (color == sf::Color(159,128,5)) {
+				m_tiles[i][j] = Tile(TypeCase::MONTAGNE);
+			}
+			else if (color == sf::Color(193,163,42)) {
+				m_tiles[i][j] = Tile(TypeCase::COLINE);
+			}
+			else if (color == sf::Color(112,112,112)) {
+				m_tiles[i][j] = Tile(TypeCase::RUINE);
+			}
+			else if (color == sf::Color(0,0,0)) {
+				m_tiles[i][j] = Tile(TypeCase::VILLE);
+			}
+			else if (color == sf::Color(255,255,0)) {
+				m_tiles[i][j] = Tile(TypeCase::PLAGE);
+			}
+			else {
+				std::cerr << "Pixel (" <<i<<','<<j<<") de couleur inconnue"<< std::endl;
+				std::string str = "Couleur (" + to_string(color.r) + ',' + to_string(color.g) + ',' + to_string(color.b) + ',' + to_string(color.a) + ')';
+				std::cerr << str << std::endl;
+				sf::Clock clock;
+				clock.restart();
+				while (clock.getElapsedTime().asSeconds() < 5) {
+
+				}
+				exit(EXIT_FAILURE);
+			}
+		}
+	}
+	std::cout << L"Chargement terminé" << std::endl;
 }

@@ -13,7 +13,6 @@
 class Game
 {
 private:
-
 	bool brouillardDeGuerre;
     void loadTextures();
 	void loadSprites();	
@@ -37,7 +36,8 @@ public:
 
     sf::RenderWindow m_window;
     sf::View m_view, m_viewMinimap, m_viewInterface;
-    double c_view[2], m_tour, m_nbJoueur, m_numJoueurActif;
+	double c_view[2];
+	int m_tour, m_nbJoueur, m_numJoueurActif;
 	sf::Vector2i centreImage;
     TextureManager m_textureManager;
 	SpriteManager m_spriteManager;
@@ -50,10 +50,10 @@ public:
 
 	std::vector<sf::Vector2f> m_deplacement, m_attaque;
 
-    Map m_map = Map();
+    Map m_map;
 	Minimap m_minimap;
 
-	Player *m_players[NB_JOUEUR_MAX], *m_playerActif;
+	Player **m_players, *m_playerActif;
 
     void render();
 	Player* getPlayerActif();

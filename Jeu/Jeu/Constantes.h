@@ -15,3 +15,4 @@
 #define SPRITE 128
 
 #define NB_JOUEUR_MAX 8
+#define NB_JOUEUR 2

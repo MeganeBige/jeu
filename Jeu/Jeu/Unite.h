@@ -8,8 +8,7 @@
 class Unite : public Entite {
 
 private : 
-	int stockRessourceActuel, stockResssourceMax, deplacementMax, champVision, resistance,
-		stockMunitionActuel, stockMunitionMax, rangeMin, rangeMax;
+	int stockRessourceActuel, stockResssourceMax, deplacementMax, champVision, resistance;
 	TypeUnite type;
 
 	//void animation(int x, int y, sf::RenderWindow *renderWindow, sf::Color color, SpriteManager *manager);

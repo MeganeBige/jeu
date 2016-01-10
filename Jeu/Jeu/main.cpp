@@ -10,15 +10,14 @@ int main()
 	MenuPrincipal mp;
     Game game;
 
-	std::cout << 3 / 2 << std::endl;
-
 	bool leftPressed(false), rightPressed(false), upPressed(false), downPressed(false);
 	//float zoom = SPRITE >> 6;
 	float zoom = 1;
 	sf::Clock m_clock;
-	sf::Clock c; //Timer pour les deplacements de la carte a la sourie
-	int fps_move_mouse = 200; //fps des deplacmeents de la camera a la sourie
-	int detecte_zone = 25; //zone de detection pour la camera a la sourie
+
+	sf::Clock c; //Timer pour les déplacements de la carte à la sourie 
+	int fps_move_mouse = 200; //fps des déplacmeents de la caméra à la sourie
+	int detecte_zone = 25; //zone de détection pour la caméra à la sourie
 	game.m_playerActif->creerUnite(unites.creerUnite("SoldatArmee",10,10),10,10, game.m_map.getTile(10,10).getBonusRes());
 	game.joueurSuivant();
 	game.getPlayerActif()->creerUnite(unites.creerUnite("SoldatArmee",11,11),11,11, game.m_map.getTile(11, 11).getBonusRes());
@@ -31,7 +30,7 @@ int main()
         {
             if (event.type == sf::Event::Closed)
             {
-                game.m_window.close();
+				game.m_window.close();
             }
 
             if (event.type == sf::Event::KeyPressed)
@@ -116,8 +115,8 @@ int main()
 				}
 				if (event.mouseButton.button == sf::Mouse::Right) {
 					game.deselection();
-					//std::cout << "mouse x: " << event.mouseButton.x << std::endl;
-					//std::cout << "mouse y: " << event.mouseButton.y << std::endl;
+					std::cout << "mouse x: " << event.mouseButton.x << std::endl;
+					std::cout << "mouse y: " << event.mouseButton.y << std::endl;
 				}
 			}
 
@@ -162,6 +161,49 @@ int main()
 			}
         }
 
+<<<<<<< HEAD
+        if (sf::Mouse::getPosition(game.m_window).y >= 30 && sf::Mouse::getPosition(game.m_window).y <= WIN_HEIGTH - 150) {
+            if (sf::Mouse::getPosition(game.m_window).x <= detecte_zone) {
+                if (c.getElapsedTime().asMilliseconds() >= fps_move_mouse &&
+                    game.c_view[0] - ((WIN_WIDTH / 2) - SPRITE) > 0) {
+                    //game.c_view[0] -= m_clock.getElapsedTime().asMicroseconds() / 20;
+                    game.c_view[0] -= SPRITE;
+                    game.centreImage.x--;
+                    c.restart();
+                }
+            }
+
+            if (sf::Mouse::getPosition(game.m_window).x >= WIN_WIDTH - detecte_zone) {
+                if (c.getElapsedTime().asMilliseconds() >= fps_move_mouse &&
+                    game.c_view[0] + ((WIN_WIDTH / 2) - SPRITE) < (MAP_WIDTH * SPRITE)) {
+                    //game.c_view[0] += m_clock.getElapsedTime().asMicroseconds() / 20;
+                    game.c_view[0] += SPRITE;
+                    game.centreImage.x++;
+                    c.restart();
+                }
+            }
+
+            if (sf::Mouse::getPosition(game.m_window).y <= detecte_zone + 30) {
+                if (c.getElapsedTime().asMilliseconds() >= fps_move_mouse &&
+                    game.c_view[1] - ((WIN_HEIGTH / 2) - SPRITE) > 0) {
+                    //game.c_view[1] -= m_clock.getElapsedTime().asMicroseconds() / 20;
+                    game.c_view[1] -= SPRITE;
+                    game.centreImage.y--;
+                    c.restart();
+                }
+            }
+
+            if (sf::Mouse::getPosition(game.m_window).y >= WIN_HEIGTH - detecte_zone - 150) {
+                if (c.getElapsedTime().asMilliseconds() >= fps_move_mouse &&
+                    game.c_view[1] + ((WIN_HEIGTH / 2) - SPRITE) < (MAP_HEIGTH * SPRITE)) {
+                    //game.c_view[1] += m_clock.getElapsedTime().asMicroseconds() / 20;
+                    game.c_view[1] += SPRITE;
+                    game.centreImage.y++;
+                    c.restart();
+                }
+            }
+        }
+=======
 		if (sf::Mouse::getPosition(game.m_window).x <= detecte_zone) {
 			if (c.getElapsedTime().asMilliseconds() >= fps_move_mouse && game.c_view[0] - ((WIN_WIDTH / 2) - SPRITE) > 0)
 			{
@@ -201,7 +243,7 @@ int main()
 				c.restart();
 			}
 		}
-
+>>>>>>> 9afef70739cc5ac91436bcdd7b0b87dba6cffd2a
 
 		game.m_window.clear(sf::Color::Black);
 		game.render();

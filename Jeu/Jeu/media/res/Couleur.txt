@@ -1,8 +1,15 @@
 Rouge b51e1e
+
 Bleu 18c4cf
+
 Vert 66b520
+
 Jaune eadf5f
+
 Orange e19826
+
 Rose d76fea
+
 Violet 9f1cdc
+
 Blanc FFFFFF

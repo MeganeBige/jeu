@@ -9,13 +9,16 @@
 
 class Map {
 private:
-    Tile m_tiles[MAP_WIDTH][MAP_HEIGTH];
+	int m_width, m_heigth;
+    Tile **m_tiles;
     unsigned int permutation[256];
-	bool m_topo, m_ressource, m_unite;
 
 public:
+	Map() {};
+	Map(int width, int heigth);
 
-    Map();
+	int getWidth();
+	int getHeigth();
 
     void mapGenerator();
     float bruitPerlin(float x, float y, float res);
@@ -25,4 +28,6 @@ public:
 
     void render(sf::RenderWindow* renderWindow, SpriteManager *manager, Player *player);
 	void render(sf::RenderWindow* renderWindow, SpriteManager *manager);
+
+	void loadMap(std::string nomMap);
 };
