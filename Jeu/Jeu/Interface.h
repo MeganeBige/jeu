@@ -19,6 +19,6 @@ public:
 	void setModeBatiment();
 
 	void render(sf::RenderWindow *renderWindow,SpriteManager *manager);
-	void renderInfoUnite(sf::RenderWindow *renderWindow, Unite *unite);
-	void ecrireMessage(sf::RenderWindow *renderWindow, float posX, float posY, std::string msg, std::string pathToFont, int fontSize, sf::Color color);
+	void renderInfoUnite(sf::RenderWindow *renderWindow, sf::Font font, Unite *unite);
+	void ecrireMessage(sf::RenderWindow *renderWindow, float posX, float posY, std::string msg, sf::Font pathToFont, int fontSize, sf::Color color);
 };

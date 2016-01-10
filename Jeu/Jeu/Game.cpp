@@ -188,7 +188,7 @@ void Game::render()
 	m_window.setView(m_viewInterface);
 	m_interface.render(&m_window, &m_spriteManager);
 	if (m_uniteSelectionne != NULL) {
-		m_interface.renderInfoUnite(&m_window, m_uniteSelectionne);
+		m_interface.renderInfoUnite(&m_window, font, m_uniteSelectionne);
 	}
 
 
