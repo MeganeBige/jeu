@@ -24,7 +24,7 @@ Batiment* BatimentManager::creerBatiment(const std::string &unite, int x, int y)
 	}
 	else if (getRef(unite)->isProductionUnite())
 	{
-		nouveauBatiment = new Batiment(*getRef(unite));
+		nouveauBatiment = new ProductionsUnite(*(ProductionsUnite*)getRef(unite));
 	}
 	else {
 		nouveauBatiment = new Batiment(*getRef(unite));

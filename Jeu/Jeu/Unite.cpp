@@ -25,12 +25,15 @@ int Unite::getStockMaxRess() const
 
 int Unite::getDeplacementMax()const
 {
-	return deplacementMax;
+	if (stockRessourceActuel < deplacementMax) {
+		return stockRessourceActuel+1;
+	}
+	return deplacementMax+1;
 }
 
 int Unite::getChampVision()const
 {
-	return champVision;
+	return champVision+1;
 }
 
 int Unite::getResistance()
@@ -69,7 +72,7 @@ void Unite::soin() {
 }
 
 bool Unite::estDetruit() {
-	return getPvRestant() < 0;
+	return getPvRestant() <= 0;
 }
 
 void Unite::reaprovisionnement()

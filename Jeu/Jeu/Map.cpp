@@ -107,121 +107,128 @@ Tile Map::getTile(int x, int y)
 	return m_tiles[x][y];
 }
 
-void Map::render(sf::RenderWindow *renderWindow, SpriteManager *manager)
+void Map::render(sf::RenderWindow *renderWindow, SpriteManager *manager, sf::Vector2i nbCase, sf::Vector2i caseCentrale)
 {
-	for (unsigned int i = 0; i < m_width; ++i)
+	for (int i = caseCentrale.x - ((nbCase.x / 2) + 1); i < caseCentrale.x + ((nbCase.x / 2) + 1); ++i)
 	{
-		for (unsigned int j = 0; j < m_heigth; ++j)
-		{
-			sf::Sprite terrain, ressource;
-			switch (m_tiles[i][j].getTypeCase())
+		if (i >= 0 && i < m_width) {
+			for (int j = caseCentrale.y - ((nbCase.y / 2) + 2); j < caseCentrale.y + ((nbCase.y / 2) + 1); ++j)
 			{
-				case TypeCase::PLAINE:
-					terrain = manager->getRef("plaine");
-					break;
-				case TypeCase::PLAGE:
-					terrain = manager->getRef("plage");
-					break;
-				case TypeCase::MONTAGNE:
-					terrain = manager->getRef("montagne");
-					break;
-				case TypeCase::MER:
-					terrain = manager->getRef("mer");
-					break;
-				case TypeCase::FORET:
-					terrain = manager->getRef("foret");
-					break;
-				case TypeCase::MARAIS:
-					terrain = manager->getRef("marais");
-					break;
-				case TypeCase::COLINE:
-					terrain = manager->getRef("coline");
-					break;
-				case TypeCase::VILLE:
-					terrain = manager->getRef("ville");
-					break;
-				case TypeCase::RUINE:
-					terrain = manager->getRef("ruine");
-					break;
-				}
-			switch (m_tiles[i][j].getRessource()) {
-				case Ressource::VIVRES:
-					ressource = manager->getRef("vivre");
-					break;
-				case Ressource::METAL:
-					ressource = manager->getRef("metal");
-					break;
-				case Ressource::PETROLE:
-					ressource = manager->getRef("petrole");
-					break;
-				default:
-					break;
-			}
+				if (j >= 0 && j < m_heigth) {
+					sf::Sprite terrain, ressource;
+					switch (m_tiles[i][j].getTypeCase())
+					{
+					case TypeCase::PLAINE:
+						terrain = manager->getRef("plaine");
+						break;
+					case TypeCase::PLAGE:
+						terrain = manager->getRef("plage");
+						break;
+					case TypeCase::MONTAGNE:
+						terrain = manager->getRef("montagne");
+						break;
+					case TypeCase::MER:
+						terrain = manager->getRef("mer");
+						break;
+					case TypeCase::FORET:
+						terrain = manager->getRef("foret");
+						break;
+					case TypeCase::MARAIS:
+						terrain = manager->getRef("marais");
+						break;
+					case TypeCase::COLINE:
+						terrain = manager->getRef("coline");
+						break;
+					case TypeCase::VILLE:
+						terrain = manager->getRef("ville");
+						break;
+					case TypeCase::RUINE:
+						terrain = manager->getRef("ruine");
+						break;
+					}
+					switch (m_tiles[i][j].getRessource()) {
+					case Ressource::VIVRES:
+						ressource = manager->getRef("vivre");
+						break;
+					case Ressource::METAL:
+						ressource = manager->getRef("metal");
+						break;
+					case Ressource::PETROLE:
+						ressource = manager->getRef("petrole");
+						break;
+					default:
+						break;
+					}
 
-			terrain.setPosition(sf::Vector2f(i*SPRITE, j*SPRITE));
-			ressource.setPosition(sf::Vector2f(i*SPRITE, j*SPRITE));
-			renderWindow->draw(terrain);
-			renderWindow->draw(ressource);
+					terrain.setPosition(sf::Vector2f(i*SPRITE, j*SPRITE));
+					ressource.setPosition(sf::Vector2f(i*SPRITE, j*SPRITE));
+					renderWindow->draw(terrain);
+					renderWindow->draw(ressource);
+				}
+			}
 		}
 	}
 }
 
-void Map::render(sf::RenderWindow *renderWindow, SpriteManager *manager, Player *player)
+// Render avec brouillard de guerre
+void Map::render(sf::RenderWindow *renderWindow, SpriteManager *manager, Player *player, sf::Vector2i nbCase, sf::Vector2i caseCentrale)
 {
-	for (unsigned int i = 0; i < m_width; ++i)
+	for (int i = caseCentrale.x - ((nbCase.x / 2) + 1); i < caseCentrale.x + ((nbCase.x / 2) + 1); ++i)
 	{
-		for (unsigned int j = 0; j < m_heigth; ++j)
-		{
-			if (player->aDecouvertLaCase(i, j)) {
-				sf::Sprite terrain, ressource;
-				switch (m_tiles[i][j].getTypeCase())
-				{
-				case TypeCase::PLAINE:
-					terrain = manager->getRef("plaine");
-					break;
-				case TypeCase::PLAGE:
-					terrain = manager->getRef("plage");
-					break;
-				case TypeCase::MONTAGNE:
-					terrain = manager->getRef("montagne");
-					break;
-				case TypeCase::MER:
-					terrain = manager->getRef("mer");
-					break;
-				case TypeCase::FORET:
-					terrain = manager->getRef("foret");
-					break;
-				case TypeCase::MARAIS:
-					terrain = manager->getRef("marais");
-					break;
-				case TypeCase::COLINE:
-					terrain = manager->getRef("coline");
-					break;
-				case TypeCase::VILLE:
-					terrain = manager->getRef("ville");
-					break;
-				case TypeCase::RUINE:
-					terrain = manager->getRef("ruine");
-					break;
-				}
-				switch (m_tiles[i][j].getRessource()) {
-				case Ressource::VIVRES:
-					ressource = manager->getRef("vivre");
-					break;
-				case Ressource::METAL:
-					ressource = manager->getRef("metal");
-					break;
-				case Ressource::PETROLE:
-					ressource = manager->getRef("petrole");
-					break;
-				default:
-					break;
-				}
+		if (i >= 0 && i < m_width) {
+			for (int j = caseCentrale.y - ((nbCase.y / 2) + 2); j < caseCentrale.y + ((nbCase.y / 2) + 1); ++j)
+			{
+				if (j >= 0 && j < m_heigth && player->aDecouvertLaCase(i, j)) {
+					sf::Sprite terrain, ressource;
+					switch (m_tiles[i][j].getTypeCase())
+					{
+					case TypeCase::PLAINE:
+						terrain = manager->getRef("plaine");
+						break;
+					case TypeCase::PLAGE:
+						terrain = manager->getRef("plage");
+						break;
+					case TypeCase::MONTAGNE:
+						terrain = manager->getRef("montagne");
+						break;
+					case TypeCase::MER:
+						terrain = manager->getRef("mer");
+						break;
+					case TypeCase::FORET:
+						terrain = manager->getRef("foret");
+						break;
+					case TypeCase::MARAIS:
+						terrain = manager->getRef("marais");
+						break;
+					case TypeCase::COLINE:
+						terrain = manager->getRef("coline");
+						break;
+					case TypeCase::VILLE:
+						terrain = manager->getRef("ville");
+						break;
+					case TypeCase::RUINE:
+						terrain = manager->getRef("ruine");
+						break;
+					}
+					switch (m_tiles[i][j].getRessource()) {
+					case Ressource::VIVRES:
+						ressource = manager->getRef("vivre");
+						break;
+					case Ressource::METAL:
+						ressource = manager->getRef("metal");
+						break;
+					case Ressource::PETROLE:
+						ressource = manager->getRef("petrole");
+						break;
+					default:
+						break;
+					}
 
-				terrain.setPosition(sf::Vector2f(i*SPRITE, j*SPRITE));
-				ressource.setPosition(sf::Vector2f(i*SPRITE, j*SPRITE));
-				renderWindow->draw(terrain);
-				renderWindow->draw(ressource);
+					terrain.setPosition(sf::Vector2f(i*SPRITE, j*SPRITE));
+					ressource.setPosition(sf::Vector2f(i*SPRITE, j*SPRITE));
+					renderWindow->draw(terrain);
+					renderWindow->draw(ressource);
+				}
 			}
 		}
 	}

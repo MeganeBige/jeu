@@ -21,7 +21,7 @@ private :
 public : 
 	Player(sf::Color color);
 
-	void creerUnite(Unite *unite,int x, int y, int resistance);
+	void creerUnite(Unite *unite, int resistance);
 	void detruireUnite(int index);
 
 	void initTechnologies();
@@ -29,8 +29,8 @@ public :
 	
 	void creerBatiment(Batiment *batiment);
 	void detruireBatiment(int index);
-	void render(sf::RenderWindow *renderWindow, SpriteManager *manager);
-	void render(sf::RenderWindow *renderWindow, SpriteManager *manager, Player *player);
+	void render(sf::RenderWindow *renderWindow, SpriteManager *manager, sf::Vector2i nbCase, sf::Vector2i caseCentrale);
+	void render(sf::RenderWindow *renderWindow, SpriteManager *manager, Player *player, sf::Vector2i nbCase, sf::Vector2i caseCentrale);
 	void update();
 	int getNombreUnite();
 	int getNombreBatiment();

@@ -41,10 +41,10 @@ void Interface::renderInfoUnite(sf::RenderWindow *renderWindow, sf::Font font, U
 	vie = vie + std::to_string(unite->getPvRestant()) + "/10";
 	
 	deplacement = "Déplacement : ";
-	deplacement = deplacement + std::to_string(unite->getDeplacementMax());
+	deplacement = deplacement + std::to_string(unite->getDeplacementMax()-1);
 	
 	vision = "Vision : ";
-	vision = vision + std::to_string(unite->getChampVision());
+	vision = vision + std::to_string(unite->getChampVision()-1);
 	
 	res = "Résistance env. : ";
 	res = res + std::to_string(unite->getResistance());
@@ -64,7 +64,7 @@ void Interface::renderInfoUnite(sf::RenderWindow *renderWindow, sf::Font font, U
 		UniteArmee* armee = (UniteArmee*)unite;
 		std::string mun = "Munition : ", port = "Portée : ";
 		mun = mun + std::to_string(armee->getStockMunActuel()) + '/' + std::to_string(armee->getStockMaxMun());
-		port = port + std::to_string(armee->getRangeMin()) + '/' + std::to_string(armee->getRangeMax());
+		port = port + std::to_string(armee->getRangeMin()-1) + '/' + std::to_string(armee->getRangeMax()-1);
 
 		ecrireMessage(renderWindow, posX, posY + 18*7, mun, font, 18, sf::Color::Black);
 		ecrireMessage(renderWindow, posX, posY + 18*8, port, font, 18, sf::Color::Black);

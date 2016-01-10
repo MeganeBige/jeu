@@ -15,12 +15,12 @@ UniteArmee::UniteArmee(int _x, int _y, std::string _nom, std::string _desc, int 
 
 int UniteArmee::getRangeMin()const
 {
-	return rangeMin;
+	return rangeMin+1;
 }
 
 int UniteArmee::getRangeMax()const
 {
-	return rangeMax;
+	return rangeMax+1;
 }
 
 int UniteArmee::getStockMunActuel()

@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "Batiment.h"
 #include "ProductionsRessource.h"
+#include "ProductionsUnite.h"
 
 class BatimentManager {
 private:
