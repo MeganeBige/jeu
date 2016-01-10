@@ -16,9 +16,9 @@ int main()
 	//float zoom = SPRITE >> 6;
 	float zoom = 1;
 	sf::Clock m_clock;
-	sf::Clock c; //Timer pour les déplacements de la carte à la sourie 
-	int fps_move_mouse = 200; //fps des déplacmeents de la caméra à la sourie
-	int detecte_zone = 25; //zone de détection pour la caméra à la sourie
+	sf::Clock c; //Timer pour les deplacements de la carte a la sourie
+	int fps_move_mouse = 200; //fps des deplacmeents de la camera a la sourie
+	int detecte_zone = 25; //zone de detection pour la camera a la sourie
 	game.m_playerActif->creerUnite(unites.creerUnite("SoldatArmee",10,10),10,10, game.m_map.getTile(10,10).getBonusRes());
 	game.joueurSuivant();
 	game.getPlayerActif()->creerUnite(unites.creerUnite("SoldatArmee",11,11),11,11, game.m_map.getTile(11, 11).getBonusRes());
@@ -182,7 +182,7 @@ int main()
 			}
 		}
 
-		if (sf::Mouse::getPosition(game.m_window).y <= detecte_zone) {
+		if (sf::Mouse::getPosition(game.m_window).y <= detecte_zone + 30 && sf::Mouse::getPosition(game.m_window).y >= 30) {
 			if (c.getElapsedTime().asMilliseconds() >= fps_move_mouse && game.c_view[1] - ((WIN_HEIGTH / 2) - SPRITE) > 0)
 			{
 				//game.c_view[1] -= m_clock.getElapsedTime().asMicroseconds() / 20;
@@ -192,7 +192,7 @@ int main()
 			}
 		}
 
-		if (sf::Mouse::getPosition(game.m_window).y >= WIN_HEIGTH - detecte_zone) {
+		if (sf::Mouse::getPosition(game.m_window).y >= WIN_HEIGTH - detecte_zone - 150 && sf::Mouse::getPosition(game.m_window).y <= WIN_HEIGTH - 150) {
 			if (c.getElapsedTime().asMilliseconds() >= fps_move_mouse && game.c_view[1] + ((WIN_HEIGTH / 2) - SPRITE) < (MAP_HEIGTH * SPRITE))
 			{
 				//game.c_view[1] += m_clock.getElapsedTime().asMicroseconds() / 20;

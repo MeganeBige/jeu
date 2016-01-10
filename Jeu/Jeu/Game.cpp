@@ -94,6 +94,46 @@ Game::Game()
 	m_numJoueurActif = 0;
 	m_playerActif = m_players[m_numJoueurActif];
 	m_players[0]->decouvre();
+
+	if (!font.loadFromFile("media/Constantine.ttf"))
+	{
+		std::cout << "Erreur chargement font" << std::endl;
+	}
+	textTour.setFont(font);
+	const int tour = m_tour;
+	textTour.setString(std::to_string(tour));
+	textTour.setCharacterSize(12);
+	textTour.setColor(sf::Color::White);
+	textTour.setStyle(sf::Text::Bold);
+	textTour.setPosition(c_view[0] + 230, c_view[1] - 291);
+
+	textEau.setFont(font);
+	textEau.setString(std::to_string(0));
+	textEau.setCharacterSize(12);
+	textEau.setColor(sf::Color::White);
+	textEau.setStyle(sf::Text::Bold);
+	textEau.setPosition(c_view[0] - 370, c_view[1] - 295);
+
+	textEnergie.setFont(font);
+	textEnergie.setString(std::to_string(0));
+	textEnergie.setCharacterSize(12);
+	textEnergie.setColor(sf::Color::White);
+	textEnergie.setStyle(sf::Text::Bold);
+	textEnergie.setPosition(c_view[0] - 254, c_view[1] - 295);
+
+	textPetrole.setFont(font);
+	textPetrole.setString(std::to_string(0));
+	textPetrole.setCharacterSize(12);
+	textPetrole.setColor(sf::Color::White);
+	textPetrole.setStyle(sf::Text::Bold);
+	textPetrole.setPosition(c_view[0] - 370, c_view[1] - 264);
+
+	textMetaux.setFont(font);
+	textMetaux.setString(std::to_string(0));
+	textMetaux.setCharacterSize(12);
+	textMetaux.setColor(sf::Color::White);
+	textMetaux.setStyle(sf::Text::Bold);
+	textMetaux.setPosition(c_view[0] - 254, c_view[1] - 264);
 }
 
 void Game::render()
@@ -119,8 +159,27 @@ void Game::render()
 		surbrillanceCaseDeplacement();
 	}
 
+	const int tour = m_tour;
+	textTour.setString(std::to_string(tour));
+	textTour.setPosition(c_view[0] + 230, c_view[1] - 291 +40 /*+40 Ã  enlever !*/);
+
+	textEau.setString(std::to_string(0));
+	textEau.setPosition(c_view[0] - 370, c_view[1] - 295 +40);
+	textEnergie.setString(std::to_string(0));
+	textEnergie.setPosition(c_view[0] - 254, c_view[1] - 295 +40);
+	textPetrole.setString(std::to_string(0));
+	textPetrole.setPosition(c_view[0] - 370, c_view[1] - 264 +40);
+	textMetaux.setString(std::to_string(0));
+	textMetaux.setPosition(c_view[0] - 254, c_view[1] - 264 +40);
+
+	m_window.draw(textTour);
+	m_window.draw(textEau);
+	m_window.draw(textEnergie);
+	m_window.draw(textPetrole);
+	m_window.draw(textMetaux);
+
 	/*
-	//Croix rouge au milieu de l'écran
+	//Croix rouge au milieu de l'ï¿½cran
 	sf::RectangleShape shape(sf::Vector2f(2, 10));
 	shape.setPosition(c_view[0]-1,c_view[1]-5);
 	shape.setFillColor(sf::Color(255, 0, 0));
@@ -129,7 +188,7 @@ void Game::render()
 	shape2.setPosition(c_view[0]-5, c_view[1]-1);
 	shape2.setFillColor(sf::Color(255, 0, 0));
 	m_window.draw(shape2);
-	*/
+	 */
 
 	// Render de l'interface
 	m_window.setView(m_viewInterface);
@@ -145,11 +204,16 @@ void Game::render()
 }
 
 void Game::clic(int x, int y) {
-	// Zone clique jeu
-	if (testClicZoneJeu(x, y)) {
+	if (y < 32) {
+		//Interface Haut
+		clicInterface(x ,y);
+	}
+	else if (testClicZoneJeu(x, y)) {
+		//Zone de jeu
 		clicZoneJeu(x, y);
-	}// Zone clique interface
+	}
 	else {
+		//Interface Bas
 		clicInterface(x, y);
 	}
 }
@@ -161,14 +225,14 @@ bool Game::testClicZoneJeu(int x, int y) {
 
 sf::Vector2i Game::definitionCaseClique(int x, int y) {
 	sf::Vector2i caseClique(-1, -1);
-	// Variable à modifier pour gérer le zoom
+	// Variable ï¿½ modifier pour gï¿½rer le zoom
 	int tailleCaseSurEcran = SPRITE;
 	int nbCaseAfficheParLigne = round(WIN_WIDTH / tailleCaseSurEcran);
 	int nbCaseAfficheParColonne = round((float)(WIN_HEIGTH - INTERFACE_HEIGTH ) / (float)tailleCaseSurEcran);
 	int decalageX = round((WIN_WIDTH - (nbCaseAfficheParLigne * tailleCaseSurEcran)) / 2);
 	int decalageY = INTERFACE_HAUT_HEIGHT;
 
-	// Défini les zones de clics des cases
+	// Dï¿½fini les zones de clics des cases
 	for (int i = 0; i < nbCaseAfficheParLigne; i++) {
 		for (int j = 0; j < nbCaseAfficheParColonne; j++) {
 			if (x >= decalageX + i*tailleCaseSurEcran && x < decalageX + (i + 1)*tailleCaseSurEcran 
@@ -278,10 +342,10 @@ void Game::clicInterface(int x, int y) {
 		finTour();
 	}
 	else if (x < 312 && 266 < x && y < 575 && 490 < y) {
-		std::cout << "Flèche gauche " << std::endl;
+		std::cout << "Fleche gauche " << std::endl;
 	}
 	else if (x < 786 && 740 < x && y < 575 && 490 < y) {
-		std::cout << "Flèche droite " << std::endl;
+		std::cout << "Fleche droite " << std::endl;
 	}
 	else if (x < 395 && 261 < x && y < 30 && 4 < y) {
 		std::cout << "Technologies " << std::endl;
@@ -321,7 +385,7 @@ void Game::finTour() {
 	m_uniteSelectionne = NULL;
 	m_playerActif->update();
 	joueurSuivant();
-	// ça pourrait être sympa d'afficher en plus "C'est au tour de joueur : "
+	// ï¿½a pourrait ï¿½tre sympa d'afficher en plus "C'est au tour de joueur : "
 	
 }
 
@@ -342,7 +406,7 @@ void Game::definitionCase() {
 			if (unite->getPeutBougerEtAttaquer()) {
 				definitionCaseUniteArmee(xOrig, yOrig, nbCase, nbCase + unite->getRangeMax());
 			}
-			// Unite armee de type artillerie et cuirassé
+			// Unite armee de type artillerie et cuirassï¿½
 			else {
 				definitionCaseUniteDistance(xOrig, yOrig, nbCase, unite->getRangeMin(), unite->getRangeMax());
 			}
@@ -653,7 +717,7 @@ void Game::selection(sf::Vector2i caseClique, int x, int y) {
 				if (m_uniteSelectionne->isArmee()) {
 					UniteArmee* unite = (UniteArmee*)m_uniteSelectionne;
 					std::cout << "Munition : " << unite->getStockMunActuel() << "/" << unite->getStockMaxMun() << std::endl;
-					std::cout << "Portée entre " << unite->getRangeMin() << " et " << unite->getRangeMax() << std::endl;
+					std::cout << "Portï¿½e entre " << unite->getRangeMin() << " et " << unite->getRangeMax() << std::endl;
 				}
 			}
 		}

@@ -41,6 +41,12 @@ public:
 	sf::Vector2i centreImage;
     TextureManager m_textureManager;
 	SpriteManager m_spriteManager;
+	sf::Font font;
+	sf::Text textTour;
+	sf::Text textEau;
+	sf::Text textEnergie;
+	sf::Text textPetrole;
+	sf::Text textMetaux;
 
 	std::vector<sf::Vector2f> m_deplacement, m_attaque;
 

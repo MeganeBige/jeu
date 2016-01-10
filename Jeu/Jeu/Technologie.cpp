@@ -2,10 +2,9 @@
 #include <cstdlib>
 #include "Technologie.h"
 
-Technologie::Technologie(std::string _nom, std::string _description, int _coutEnergie, int _coutVivre, int _coutMetal, int _coutPetrole): coutEnergie(_coutEnergie)
+Technologie::Technologie(std::string _nom, int _coutEnergie, int _coutVivre, int _coutMetal, int _coutPetrole)
 {
 	nom = _nom;
-	description = _description;
 	coutEnergie = _coutEnergie;
 	coutMetal = _coutMetal;
 	coutPetrole = _coutPetrole;
@@ -15,9 +14,8 @@ Technologie::Technologie(std::string _nom, std::string _description, int _coutEn
 
 bool Technologie::verifierCoutTechnologie(int energie, int essence, int metaux, int vivre)
 {
-	if (coutEnergie <= energie && coutPetrole <= essence
-		&& coutMetal <= metaux && coutVivre <= vivre) return true;
-	return false;
+	return coutEnergie <= energie && coutPetrole <= essence
+		   && coutMetal <= metaux && coutVivre <= vivre;
 }
 
 bool Technologie::verifierSiRecherchable() {

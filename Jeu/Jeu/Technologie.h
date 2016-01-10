@@ -6,7 +6,6 @@ class Technologie {
 
 private:
 	std::string nom;
-	std::string description;
 	int coutEnergie;
 	int coutVivre;
 	int coutMetal;
@@ -16,7 +15,7 @@ private:
 	bool estRecherche;
 
 public:
-	Technologie(std::string nom, std::string description, int coutEnergie, int coutVivre, int coutMetal, int coutPetrole);
+	Technologie(std::string nom, int coutEnergie, int coutVivre, int coutMetal, int coutPetrole);
 	bool verifierCoutTechnologie(int energie, int essence, int metaux, int vivre);
 	bool verifierSiRecherchable();
 
